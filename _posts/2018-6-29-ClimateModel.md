@@ -1,6 +1,6 @@
 ---
 layout: post    
-title: Basic Climate Modeling with Time Series (Part 1)
+title: Basic Climate Modeling with a Simple Sinusoidal Regression
 ---
 
 *This study will look at co2 measurements from ice core data over the long timescale of 120 - 800,000 years ago.  This co2 dataset perhaps extends back further than any other...*
