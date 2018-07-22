@@ -1,45 +1,49 @@
+---
+layout: post    
+title: Basic Climate Modeling with ARIMA & python
+---
+
 *Wihin this post, we will continue our study of CO2 with ice core data with a range of 800,000 years*
 
 **Where we left off**  
-In the previous post, we developed a simple sinusoidal regression model to approximate the data.
+In the previous post, we developed a simple sinusoidal regression model to approximate the ice core data.    
 Simple indeed!  As we can see, the sinusoidal is unable to capture the patterns of the data.
 ![plot6](https://github.com/julialintern/julialintern.github.io/raw/master/images/Plot_6.png)
 
 Let's see if we can do better.
 
 
-**Why ARIMA?**
+**Why ARIMA?**   
 It may seem that there are so many different flavors and approaches of time series models including: models that have lagged features, differenced features, random walks, etc.  However, there is one type of time series
 model that can combine all of these options: the ARIMA model.
 ARIMA, Autoregressive Integrated Moving Average, is a time series model that incorporates
 both autoregressive and moving average features.  
 Autoregressive features are lagged features, where moving average features are generated from past error terms.
-The 'integrated' component of ARIMA is the required detrending step.  
-(Don't worry, we will dive deeper into all of this!)
+The 'integrated' component of ARIMA is a detrending step.  
 
  Most importantly, we can leverage our ARIMA model to forecast future time steps.
 
-**ARIMA modeling steps**
-Here is a quick look at the outline of all required steps.
+**ARIMA modeling steps**   
+Here is a quick look at the required steps to develop an ARIMA model.
 We will break down each of the steps in detail below.
 
-1) Decide if the original time-series requires a nonlinear transformation (logging, exponentiating, box-cox,,).  We
+1) Decide if the original time-series requires a nonlinear transformation (logging, exponentiating, box-cox, etc.).  We
 want the time series (Y) to be additive as opposed to multiplicative.   
 
-2) Determine if the time series is stationary.  If non-stationary, then apply first-differencing.
+2) Determine if Y is stationary.  If non-stationary, then apply first-differencing.
 If still non-stationary, apply 2nd differencing.
 
 3) Once we have our Y: (forecast for y at time t) y= constant + weighted sum of the last p values of y + weighted sum of the last q forecast errors
 
-*4) Perform a train/test/validation split in order to assess ARIMA on unseen data.
+4) Perform a train/test/validation split in order to assess ARIMA on unseen data.
 
-*5) Iterate ? *
-*? Examine the residuals from the fitted model to confirm if adequate.
+5) Iterate ?
 
 
-**1) Additive vs Multiplicative**
 
-Remember, that we have three main components with any time series:
+**1) Additive vs Multiplicative**  
+
+Remember, that there are three main components with any time series:
 trend, seasonality and the random component (error).
 In a multiplicative time series, the components multiply together to create
 the time series.
@@ -57,9 +61,9 @@ But why do we strive for an additive model ?
 
 For the same reason that we take the log when dealing with skewed response variables
 when dealing with any regression: with the goal being residuals that have a normal distribution
-and constant variance.  Additive models are able to achieve this requirement [why? ]; central limit
+and constant variance.  Additive models are able to achieve this requirement [why?](https://en.wikipedia.org/wiki/Central_limit_theorem)
 
-*How to assess?*
+*How to determine if we require a transformation?*
 
 We can simply look at the time series.
 An additive series, even with a trend, will have roughly the same size
@@ -67,12 +71,14 @@ peaks and troughs.
 
 ![plot2](https://github.com/julialintern/julialintern.github.io/raw/master/images/additive.png)
 
-With a multiplicative series, the size of the seasonal effect is proportional to the mean (as shown.. ?),
+With a multiplicative series, the size of the seasonal effect is proportional to the mean (as shown).
 
 ![plot3](https://github.com/julialintern/julialintern.github.io/raw/master/images/multiplicative.png)
 
-Based on the consistent peaks & troughs of this dataset, I will forego any transformations at this
+Based on the consistent peaks & troughs of the ice core dataset, I will forego any transformations at this
 stage and move on to step #2.
+
+![plot4](https://github.com/julialintern/julialintern.github.io/raw/master/images/Plot_1.png)
 
 **#2 Stationarity Check**
 
