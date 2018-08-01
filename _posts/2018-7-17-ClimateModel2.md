@@ -33,7 +33,8 @@ want the time series (Y) to be additive as opposed to multiplicative.
 2) Determine if Y is stationary.  If non-stationary, then apply first-differencing.
 If still non-stationary, apply 2nd differencing.
 
-3) Once we have our Y (forecast for Y at time t) y_hat= constant + weighted sum of the last p values of y + weighted sum of the last q forecast errors
+3) Once we have our Y (forecast for Y at time t)  
+ y_hat= constant + weighted sum of the last p values of y + weighted sum of the last q forecast errors
 
 
 
@@ -63,13 +64,10 @@ and constant variance.  Additive models are able to achieve this requirement [wh
 
 We can simply look at the time series.
 An additive series, even with a trend, will have roughly the same size
-peaks and troughs.
+peaks and troughs.   
 
-![plot2](https://github.com/julialintern/julialintern.github.io/raw/master/images/additive.png)
+With a multiplicative series, the size of the seasonal effect is proportional to the mean.
 
-With a multiplicative series, the size of the seasonal effect is proportional to the mean (as shown).
-
-![plot3](https://github.com/julialintern/julialintern.github.io/raw/master/images/multiplicative.png)
 
 Based on the relatively consistent peaks & troughs of our ice core dataset, we will forego any transformations at this
 stage and move on to step #2.
@@ -145,36 +143,29 @@ print(df_results)
 
 ```
 
-Test Statistic            -4.141938   
-p-value                    0.000825   
-Lags Used                  4.000000   
-Observations Used       1091.000000   
-Critical Value (1%)       -3.436358   
-Critical Value (5%)       -2.864193   
-Critical Value (10%)      -2.568182   
+![plot6](https://github.com/julialintern/julialintern.github.io/raw/master/images/dickey.png)
 
 
 What do you think?  Assuming a critical value of 0.05, it looks like we can reject the null hypothesis.
 According to Dickey & Fuller our non-transformed data just might be stationary enough.
 
-#3) Developing the ARIMA.
+**#3) Developing the ARIMA**
 
 Once we are confident that time series data is stationary, we can develop our ARIMA model!
 
 The ARIMA equation for predicting Y is as follows:
 
 
-$$ Y^{hat}$$ = constant + weighted sum of the last p values of y + weighted sum of the
-last q forecast errors $$
+$$ Y^{hat}$$ = constant + weighted sum of the last p values of y + weighted sum of the last q forecast errors
 
 Here p and q denotes the number of lags on Y and the number of lagged errors respectively.
 
 Formally, we have:  
-$$ Y^{hat}$$ = /mu + /phi_1y_{t-1} + /phi_2y_{t-2} +... - /Theta_1e_{t-1} - /Theta_2e_{t-2}...  $$
+$$ Y^{hat} = /mu + /phi_1y_{t-1} + /phi_2y_{t-2} +... - /Theta_1e_{t-1} - /Theta_2e_{t-2}...  $$
 
-Our ARIMA is model is completely specified by p,d,& q!  
+Our ARIMA model is completely specified by p,d,& q!  
 But determining how many lags to use for p & q can be tricky.
-But luckily, there are some rules of thumb we can use to determine the best values of
+Luckily, there are some rules of thumb we can use to determine the best values of
 p & q together with autocorrelation & partial autocorrelation plots.
 
 Lets generate the plots:
@@ -200,7 +191,7 @@ plot_pacf(data.co2,lags=100)
 [Shamelessly copied from duke's arima notes, page 4 ](http://people.duke.edu/~rnau/Notes_on_nonseasonal_ARIMA_models--Robert_Nau.pdf)
 
 
-*i. If the ACF plot “cuts off sharply” at lag k (i.e., if the autocorrelation is significantly
+i. If the ACF plot “cuts off sharply” at lag k (i.e., if the autocorrelation is significantly
 different from zero at lag k and extremely low in significance at the next higher lag and
 the ones that follow), while there is a more gradual “decay” in the PACF plot (i.e. if
 the dropoff in significance beyond lag k is more gradual), then set q=k and p=0. This
@@ -212,7 +203,9 @@ signature.”
 
 iii. If there is a single spike at lag 1 in both the ACF and PACF plots, then set p=1 and q=0
 if it is positive (this is an AR(1) signature), and set p=0 and q=1 if it is negative (this is
-an MA(1) signature).*    
+an MA(1) signature).
+
+
 
 
 It looks like we are seeing strong signs of what is described in note (ii): an AR signature.  In this case, one with two lags ~ AR(2)
@@ -238,9 +231,9 @@ sar.summary()
 We opted for a SARIMAX model here.
 SARIMAX is similiar to ARIMA models, but it contains a bit of flexibility in that it allows
 for additional features :    
-a) 'S': adaptation for seasonal features (a good option if you have seasons within cyclical data
-  or seasons within seasons!).  
-b) 'X': allows for various, additional explanatory variables
+('S' in SARIMAX is for seasonal):  Seasonal features are a good option if you have seasons within cyclical data
+  or seasons within seasons.
+('X' in SARIMAX is for Exogenous? (my best guess)): Allows for various, additional explanatory variables
 
 
 Lets generate some forecasts.
@@ -259,10 +252,10 @@ for t in range(len(test)):
 
 ```
 
-![plot10](https://github.com/julialintern/julialintern.github.io/raw/master/images/test.png)
+![plot10](https://github.com/julialintern/julialintern.github.io/raw/master/images/test_plot.png)
 
 
 Looks pretty good.  However, we still have step #4) Iterate.
 Our decision to leverage an AR(2) model was based on theory.  However, it would be
 wise to perform a grid search approach on hyper-parameters to determine which model
-minimizes errors.   Stay tuned for the next post. 
+minimizes errors.   Stay tuned for the next post.
