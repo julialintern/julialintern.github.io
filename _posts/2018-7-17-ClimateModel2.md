@@ -259,7 +259,8 @@ for t in range(len(test)):
 ![plot10](https://github.com/julialintern/julialintern.github.io/raw/master/images/test_plot.png)
 
 
-Looks pretty good.  However, we still have step #4) Iterate.
+Looks pretty good.  However, we haven't completed step #4.
 Our decision to leverage an AR(2) model was based on theory.  However, it would be
-wise to perform a grid search approach on hyper-parameters to determine which model
-minimizes errors.   Stay tuned for the next post.
+wise to perform an iterative/grid search approach to confirm which hyper-parameters are truly optimal
+via train/test/val splits & minimization of the loss metric.  This will be the focus of the next post.
+Stay tuned !
