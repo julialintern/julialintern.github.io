@@ -33,8 +33,9 @@ want the time series (Y) to be additive as opposed to multiplicative.
 2) Determine if Y is stationary.  If non-stationary, then apply first-differencing.
 If still non-stationary, apply 2nd differencing.
 
-3) Once we have our Y (forecast for Y at time t)  
- y_hat= constant + weighted sum of the last p values of y + weighted sum of the last q forecast errors
+3)Forecast for Y at time t.
+
+4) Iterate.
 
 
 
@@ -58,7 +59,7 @@ if we simply take the log !
 
 For the same reason that we take the log when dealing with skewed response variables
 when dealing with any regression: our goals is to obtain residuals that have a normal distribution
-and constant variance.  Additive models are able to achieve this requirement [why?](https://en.wikipedia.org/wiki/Central_limit_theorem)
+and constant variance.  Additive models are able to achieve this requirement. [why?](https://en.wikipedia.org/wiki/Central_limit_theorem)
 
 *How to determine if we require a transformation?*
 
@@ -151,7 +152,7 @@ According to Dickey & Fuller our non-transformed data just might be stationary e
 
 **#3) Developing the ARIMA**
 
-Once we are confident that time series data is stationary, we can develop our ARIMA model!
+Once we are confident that time series data is stationary, we can develop our ARIMA model.
 
 The ARIMA equation for predicting Y is as follows:
 
@@ -163,7 +164,7 @@ Here p and q denotes the number of lags on Y and the number of lagged errors res
 Formally, we have:  
 $$ Y^{hat} = \mu + \phi_1y_{t-1} + \phi_2y_{t-2} +... - \Theta_1e_{t-1} - \Theta_2e_{t-2}...  $$
 
-Our ARIMA model is completely specified by p,d,& q!  
+Our ARIMA model is completely specified by p,d,& q.
 But determining how many lags to use for p & q can be tricky.
 Luckily, there are some rules of thumb we can use to determine the best values of
 p & q together with autocorrelation & partial autocorrelation plots.
@@ -188,8 +189,6 @@ plot_pacf(data.co2,lags=100)
 ![plot8](https://github.com/julialintern/julialintern.github.io/raw/master/images/partial_corr.png)
 
 *Rules of Thumb    
-[Shamelessly copied from duke's arima notes, page 4 ](http://people.duke.edu/~rnau/Notes_on_nonseasonal_ARIMA_models--Robert_Nau.pdf)
-
 
 i. If the ACF plot “cuts off sharply” at lag k (i.e., if the autocorrelation is significantly
 different from zero at lag k and extremely low in significance at the next higher lag and
@@ -205,7 +204,7 @@ iii. If there is a single spike at lag 1 in both the ACF and PACF plots, then se
 if it is positive (this is an AR(1) signature), and set p=0 and q=1 if it is negative (this is
 an MA(1) signature).*
 
-
+[resrouce: duke's arima notes, page 4 ](http://people.duke.edu/~rnau/Notes_on_nonseasonal_ARIMA_models--Robert_Nau.pdf)
 
 
 It looks like we are seeing strong signs of what is described in note (ii): an AR signature.  In this case, one with two lags ~ AR(2)
