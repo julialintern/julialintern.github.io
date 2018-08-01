@@ -105,7 +105,7 @@ rm=pd.rolling_mean(data,window=100)
 rm.plot(figsize=(10,8));
 ```
 
-![plot6](https://github.com/julialintern/julialintern.github.io/raw/master/images/plot3.png)
+![plot6](https://github.com/julialintern/julialintern.github.io/raw/master/images/Plot_3.png)
 
 *How to address non-stationarity*    
 We can de-trend our time series with a first-difference transformation.
@@ -161,7 +161,7 @@ $$ Y^{hat}$$ = constant + weighted sum of the last p values of y + weighted sum 
 Here p and q denotes the number of lags on Y and the number of lagged errors respectively.
 
 Formally, we have:  
-$$ Y^{hat} = /mu + /phi_1y_{t-1} + /phi_2y_{t-2} +... - /Theta_1e_{t-1} - /Theta_2e_{t-2}...  $$
+$$ Y^{hat} = \mu + \phi_1y_{t-1} + \phi_2y_{t-2} +... - \Theta_1e_{t-1} - \Theta_2e_{t-2}...  $$
 
 Our ARIMA model is completely specified by p,d,& q!  
 But determining how many lags to use for p & q can be tricky.
@@ -187,7 +187,7 @@ plot_pacf(data.co2,lags=100)
 ```
 ![plot8](https://github.com/julialintern/julialintern.github.io/raw/master/images/partial_corr.png)
 
-*Rules of Thumb*     
+*Rules of Thumb    
 [Shamelessly copied from duke's arima notes, page 4 ](http://people.duke.edu/~rnau/Notes_on_nonseasonal_ARIMA_models--Robert_Nau.pdf)
 
 
@@ -203,7 +203,7 @@ signature.”
 
 iii. If there is a single spike at lag 1 in both the ACF and PACF plots, then set p=1 and q=0
 if it is positive (this is an AR(1) signature), and set p=0 and q=1 if it is negative (this is
-an MA(1) signature).
+an MA(1) signature).*
 
 
 
@@ -233,10 +233,14 @@ SARIMAX is similiar to ARIMA models, but it contains a bit of flexibility in tha
 for additional features :    
 ('S' in SARIMAX is for seasonal):  Seasonal features are a good option if you have seasons within cyclical data
   or seasons within seasons.
-('X' in SARIMAX is for Exogenous? (my best guess)): Allows for various, additional explanatory variables
+('X' in SARIMAX is for Exogenous): Allows for additional explanatory variables.
+
+We can a good bit about our model by examining the summary table, most of which aligns with a
+typical OLS summary output.   We can see that the AR(1) lagged feauture is considerably stronger
+than AR(2).  The sigma2 output in the coefficients table is the estimate of the variance of the error term.
 
 
-Lets generate some forecasts.
+Lets use SARIMAX to generate some forecasts.
 
 ```
 # create model & predict one obs at a time
