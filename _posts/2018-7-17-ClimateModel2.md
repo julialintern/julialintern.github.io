@@ -53,12 +53,12 @@ In an additive time series, the components are added together.
 Data = Trend + Seasonal + Random
 
 Luckily, a multiplicative series is as easy to fit as an additive series -
-if we simply take the log !
+if we simply take the log.
 
 *But why do we strive for an additive model ?*
 
 For the same reason that we take the log when dealing with skewed response variables
-when dealing with any regression: our goals is to obtain residuals that have a normal distribution
+when dealing with any regression, our goal is to obtain residuals that have a normal distribution
 and constant variance.  Additive models are able to achieve this requirement. [why?](https://en.wikipedia.org/wiki/Central_limit_theorem)
 
 *How to determine if we require a transformation?*
@@ -67,15 +67,14 @@ We can simply look at the time series.
 An additive series, even with a trend, will have roughly the same size
 peaks and troughs.   
 
-With a multiplicative series, the size of the seasonal effect is proportional to the mean.
+In a multiplicative series, the size of the seasonal effect is proportional to the mean.
 
 
-Based on the relatively consistent peaks & troughs of our ice core dataset, we will forego any transformations at this
-stage and move on to step #2.
+Based on the relatively consistent peaks & troughs of our ice core dataset, we will forego any transformations at this stage and move on to step #2.
 
 ![plot4](https://github.com/julialintern/julialintern.github.io/raw/master/images/Plot_1.png)
 
-**#2 Stationarity Check**
+**2) Stationarity Check**
 
 In order to develop ARIMA, our input must be stationary.
 A stationary time series has no trend, constant variance over time, and 'consistent' wiggliness.
@@ -93,9 +92,10 @@ time series forecasting models.
 A moving average plot can give us a sense of whether our data is stationary or not.
 We can generate that easily with pandas.
 
-First: a quick look at our data:
+
 
 ```
+#a quick look at our data:
 d.head()
 ```
 
@@ -108,15 +108,15 @@ rm.plot(figsize=(10,8));
 
 ![plot6](https://github.com/julialintern/julialintern.github.io/raw/master/images/Plot_3.png)
 
-*How to address non-stationarity*    
+*How to address non-stationarity:*    
 We can de-trend our time series with a first-difference transformation.
 First-difference is the delta between two adjacent observations.
 We can also calculate this readily with pandas:
 
 
 ```
+# calculating first difference
 data['first_dif']=data.co2.diff()
-data.first_dif.plot()
 ```
 
 If Y is replaced by the first difference of Y (delta Y), then we will have an 'integrated' model.
@@ -150,7 +150,7 @@ print(df_results)
 What do you think?  Assuming a critical value of 0.05, it looks like we can reject the null hypothesis.
 According to Dickey & Fuller our non-transformed data just might be stationary enough.
 
-**#3) Developing the ARIMA**
+**3) Developing the ARIMA**
 
 Once we are confident that time series data is stationary, we can develop our ARIMA model.
 
@@ -188,7 +188,7 @@ plot_pacf(data.co2,lags=100)
 ```
 ![plot8](https://github.com/julialintern/julialintern.github.io/raw/master/images/partial_corr.png)
 
-*Rules of Thumb    
+Rules of Thumb    
 
 i. If the ACF plot “cuts off sharply” at lag k (i.e., if the autocorrelation is significantly
 different from zero at lag k and extremely low in significance at the next higher lag and
@@ -202,9 +202,9 @@ signature.”
 
 iii. If there is a single spike at lag 1 in both the ACF and PACF plots, then set p=1 and q=0
 if it is positive (this is an AR(1) signature), and set p=0 and q=1 if it is negative (this is
-an MA(1) signature).*
+an MA(1) signature).
 
-[resrouce: duke's arima notes, page 4 ](http://people.duke.edu/~rnau/Notes_on_nonseasonal_ARIMA_models--Robert_Nau.pdf)
+[resource: duke's arima notes, page 4 ](http://people.duke.edu/~rnau/Notes_on_nonseasonal_ARIMA_models--Robert_Nau.pdf)
 
 
 It looks like we are seeing strong signs of what is described in note (ii): an AR signature.  In this case, one with two lags ~ AR(2)
@@ -230,13 +230,11 @@ sar.summary()
 We opted for a SARIMAX model here.
 SARIMAX is similiar to ARIMA models, but it contains a bit of flexibility in that it allows
 for additional features :    
-('S' in SARIMAX is for seasonal):  Seasonal features are a good option if you have seasons within cyclical data
-  or seasons within seasons.
-('X' in SARIMAX is for Exogenous): Allows for additional explanatory variables.
+The 'S' in SARIMAX is for seasonal.  Seasonal features are a good option if you have seasons within cyclical data or seasons within seasons.  The 'X' in SARIMAX is for Exogenous, which allows for additional explanatory variables.
 
-We can a good bit about our model by examining the summary table, most of which aligns with a
-typical OLS summary output.   We can see that the AR(1) lagged feauture is considerably stronger
-than AR(2).  The sigma2 output in the coefficients table is the estimate of the variance of the error term.
+We can learn a good bit about our model by examining the summary table, most of which aligns with a
+typical OLS summary output.   We can see that the AR(1) lagged feature is considerably stronger
+than AR(2).  Note that the sigma2 output in the coefficients table is the estimate of the variance of the error term.
 
 
 Lets use SARIMAX to generate some forecasts.
