@@ -106,7 +106,7 @@ rm=pd.rolling_mean(data,window=100)
 rm.plot(figsize=(10,8));
 ```
 
-![plot6](https://github.com/julialintern/julialintern.github.io/raw/master/images/Plot_3.png)
+![plot6](https://github.com/julialintern/julialintern.github.io/raw/master/images/rolling.png)
 
 *How to address non-stationarity:*    
 We can de-trend our time series with a first-difference transformation.
@@ -253,7 +253,7 @@ for t in range(len(test)):
 
 ```
 
-![plot10](https://github.com/julialintern/julialintern.github.io/raw/master/images/test_plot.png)
+![plot10](https://github.com/julialintern/julialintern.github.io/raw/master/images/test_pred.png)
 
 
 Looks pretty good.  However, we haven't completed step #4.
